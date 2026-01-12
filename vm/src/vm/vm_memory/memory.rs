@@ -717,6 +717,14 @@ impl Memory {
         }
     }
 
+    /// Clears all memory data to free memory.
+    /// This is useful after the memory has been copied elsewhere (e.g., to CairoPieMemory).
+    /// For large executions, memory can consume significant space (~1.2GB+).
+    pub fn clear_data(&mut self) {
+        self.data.clear();
+        self.temp_data.clear();
+    }
+
     pub fn get_amount_of_accessed_addresses_for_segment(
         &self,
         segment_index: usize,

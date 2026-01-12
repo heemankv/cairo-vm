@@ -896,6 +896,13 @@ impl VirtualMachine {
         self.current_step
     }
 
+    /// Clears the execution trace to free memory.
+    /// This is useful when the trace is no longer needed (e.g., after CairoPie generation).
+    /// For large executions, the trace can consume significant memory (~1.5GB+).
+    pub fn clear_trace(&mut self) {
+        self.trace = None;
+    }
+
     ///Gets the integer value corresponding to the Relocatable address
     pub fn get_integer(&self, key: Relocatable) -> Result<Cow<Felt252>, MemoryError> {
         self.segments.memory.get_integer(key)
