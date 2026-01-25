@@ -1438,7 +1438,7 @@ impl CairoRunner {
         })
     }
 
-    pub fn get_air_public_input(&self) -> Result<PublicInput, PublicInputError> {
+    pub fn get_air_public_input(&self) -> Result<PublicInput<'_>, PublicInputError> {
         PublicInput::new(
             &self.relocated_memory,
             self.layout.name.to_str(),
