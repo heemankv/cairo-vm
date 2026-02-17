@@ -54,6 +54,9 @@ pub mod stdlib {
     pub use crate::without_std::*;
 }
 
+#[cfg(feature = "std")]
+pub mod hash_timing;
+
 pub mod air_private_input;
 pub mod air_public_input;
 pub mod cairo_run;

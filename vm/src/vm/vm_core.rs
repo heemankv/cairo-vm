@@ -38,6 +38,7 @@ use core::cmp::Ordering;
 #[cfg(feature = "extensive_hints")]
 use core::num::NonZeroUsize;
 use num_traits::{ToPrimitive, Zero};
+#[cfg(feature = "std")]
 
 use super::errors::runner_errors::RunnerError;
 use super::runners::builtin_runner::{ModBuiltinRunner, RC_N_PARTS_STANDARD};
