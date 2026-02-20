@@ -1,5 +1,6 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::sync::OnceLock;
 use std::time::Instant;
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -7,6 +8,8 @@ pub struct HashTimingStat {
     pub count: u64,
     pub total_us: u64,
 }
+
+static HASH_LOGS_ENABLED: OnceLock<bool> = OnceLock::new();
 
 thread_local! {
     static HASH_TIMING_STATS: RefCell<HashMap<&'static str, HashTimingStat>> =
@@ -43,7 +46,16 @@ impl Drop for HashTimingGuard {
 }
 
 pub fn hash_logs_enabled() -> bool {
-    false
+    *HASH_LOGS_ENABLED.get_or_init(|| {
+        let value = std::env::var("BLOCKIFIER_HASH_LOGS").unwrap_or_default();
+        if value.is_empty() {
+            return false;
+        }
+        match value.to_ascii_lowercase().as_str() {
+            "0" | "false" | "no" | "off" => false,
+            _ => true,
+        }
+    })
 }
 
 pub fn reset_hash_timing() {
