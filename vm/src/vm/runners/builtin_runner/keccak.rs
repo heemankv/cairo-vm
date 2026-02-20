@@ -14,6 +14,8 @@ use crate::Felt252;
 use lazy_static::lazy_static;
 use num_bigint::BigUint;
 use num_integer::div_ceil;
+#[cfg(feature = "std")]
+use crate::hash_timing::HashTimingGuard;
 
 const KECCAK_FELT_BYTE_SIZE: usize = 25; // 200 / 8
 const BITS: u32 = 200;
@@ -66,6 +68,8 @@ impl KeccakBuiltinRunner {
         address: Relocatable,
         memory: &Memory,
     ) -> Result<Option<MaybeRelocatable>, RunnerError> {
+        #[cfg(feature = "std")]
+        let _guard = HashTimingGuard::new("CAIRO_VM_HASH_KECCAK");
         let index = address.offset % CELLS_PER_KECCAK as usize;
         if index < INPUT_CELLS_PER_KECCAK as usize {
             return Ok(None);

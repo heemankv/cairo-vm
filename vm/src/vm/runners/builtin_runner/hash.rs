@@ -2,6 +2,8 @@ use crate::air_private_input::{PrivateInput, PrivateInputPair};
 use crate::stdlib::{cell::RefCell, prelude::*};
 use crate::types::builtin_name::BuiltinName;
 use crate::types::instance_definitions::pedersen_instance_def::CELLS_PER_HASH;
+#[cfg(feature = "std")]
+use crate::hash_timing::HashTimingGuard;
 use crate::types::relocatable::{MaybeRelocatable, Relocatable};
 use crate::vm::errors::memory_errors::MemoryError;
 use crate::vm::errors::runner_errors::RunnerError;
@@ -10,6 +12,7 @@ use crate::vm::vm_memory::memory::Memory;
 use crate::vm::vm_memory::memory_segments::MemorySegmentManager;
 use num_integer::{div_ceil, Integer};
 use starknet_types_core::hash::StarkHash;
+#[cfg(feature = "std")]
 
 #[derive(Debug, Clone)]
 pub struct HashBuiltinRunner {
@@ -60,6 +63,8 @@ impl HashBuiltinRunner {
         address: Relocatable,
         memory: &Memory,
     ) -> Result<Option<MaybeRelocatable>, RunnerError> {
+        #[cfg(feature = "std")]
+        let _guard = HashTimingGuard::new("CAIRO_VM_HASH_PEDERSEN");
         if address.offset.mod_floor(&(CELLS_PER_HASH as usize)) != 2
             || *self
                 .verified_addresses

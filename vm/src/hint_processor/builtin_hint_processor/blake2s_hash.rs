@@ -1,4 +1,5 @@
 use crate::stdlib::{ops::Shl, prelude::*};
+use std::time::Instant;
 
 pub const IV: [u32; 8] = [
     0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
@@ -109,6 +110,7 @@ pub fn blake2s_compress(
     f0: u32,
     f1: u32,
 ) -> Vec<u32> {
+    let start = Instant::now();
     let mut state = h.to_vec();
     state.extend(&IV[0..4]);
     state.extend(&vec![
@@ -124,6 +126,8 @@ pub fn blake2s_compress(
     for i in 0..8 {
         new_state.push(h[i] ^ state[i] ^ state[8 + i]);
     }
+    let _elapsed_us = start.elapsed().as_micros();
+    // log::info!("tx_timing: cairo-vm: blake2s: {} us", _elapsed_us);
     new_state
 }
 

@@ -12,7 +12,8 @@ use crate::vm::vm_memory::memory_segments::MemorySegmentManager;
 use crate::Felt252;
 use num_integer::div_ceil;
 use starknet_types_core::hash::Poseidon;
-
+#[cfg(feature = "std")]
+use crate::hash_timing::HashTimingGuard;
 #[derive(Debug, Clone)]
 pub struct PoseidonBuiltinRunner {
     pub base: usize,
@@ -60,6 +61,8 @@ impl PoseidonBuiltinRunner {
         address: Relocatable,
         memory: &Memory,
     ) -> Result<Option<MaybeRelocatable>, RunnerError> {
+        #[cfg(feature = "std")]
+        let _guard = HashTimingGuard::new("CAIRO_VM_HASH_POSEIDON");
         let index = address.offset % CELLS_PER_POSEIDON as usize;
         if index < INPUT_CELLS_PER_POSEIDON as usize {
             return Ok(None);
